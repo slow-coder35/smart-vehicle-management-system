@@ -1,0 +1,50 @@
+# Implementation notes
+
+Motive implements the three-role, multiple-centre system specified in the SRS. The local application uses Next.js 16, React 19, PostgreSQL 17, and MongoDB 8. See the committed lockfile for exact application dependencies.
+
+## Entry points
+
+- UI: `app/page.tsx` loads the responsive role workspace in `components/workspace.tsx`.
+- API: `app/api/[...path]/route.ts` dispatches the documented authenticated endpoints.
+- Persistence: `lib/db.ts` owns pooled PostgreSQL/MongoDB clients.
+- Security: `lib/auth.ts` handles opaque sessions, role restrictions, origin enforcement, and local rate limiting.
+- Validation: `lib/validation.ts` defines strict request shapes.
+- Intelligence: `lib/maintenance.ts` contains clock-testable calendar/mileage calculations; `lib/data.ts` supplies history, recurring faults, and aggregates.
+
+## Reservation data flow
+
+The browser creates a request UUID and retains it for identical retries. The API gets the actor from the cookie session and validates the payload. `reserve_booking` locks the owned vehicle, obtains a shared active-centre lock, and locks the slot. It checks conflicting reservations and occupancy, inserts a confirmed booking, and records the initial audit entry. Cancellation locks the same resources and releases capacity by changing state; it does not delete history.
+
+Two callers submitting to the final available space serialize on the slot row. Only one inserts. The runtime database role cannot bypass this by issuing direct booking writes.
+
+## Service completion data flow
+
+Staff starts an eligible arrival, then optionally saves an inspection. The completion function locks vehicle/booking, rechecks staff-centre membership, validates mileage and line items, saves the record/items, updates mileage, and completes/audits the booking in one SQL transaction. Duplicate completion returns the existing record. Charges are calculated from line items, never maintained as a second editable total.
+
+## Inspection data flow
+
+The API verifies a PostgreSQL booking and locks vehicle/booking before a MongoDB write. The document contains identifiers supplied by the server, not client-selected ownership. Creation starts at revision 1; edits require the current revision. A completion waiting on the same booking cannot interleave with an inspection save. There is no distributed rollback guarantee: an uncertain MongoDB write must be resolved by reading the current document.
+
+MongoDB's validator and unique booking index apply even to direct writes. Inspection results are aggregated with match/unwind/group stages. Missing document data is not invented when MongoDB is unavailable.
+
+## Intelligence
+
+A completed item of a given service type establishes that type's last-service baseline. Otherwise an owner-provided initial baseline is used. Calendar months clamp to month end. A rule is due when any known threshold is reached, due soon within 30 days or 500 km, insufficient when a needed baseline is unknown, and up to date only when all configured dimensions support that conclusion. Mileage over 30 days old is separately flagged.
+
+Repeated faults count distinct service records within 180 days. The UI links the evidence through booking references and dates; the result is an inspection prompt rather than a mechanical diagnosis.
+
+## Implementation boundaries
+
+- Styling uses responsive CSS in `app/globals.css`; no Tailwind build dependency is required.
+- UI sections are consolidated into a single stateful workspace; API resources follow the SRS routes. Browser refresh returns to Overview.
+- Vehicle registration/ownership are immutable. Descriptive details can be edited through the garage; the UI also exposes mileage update, service/history and maintenance actions.
+- The shared catalogue is seeded and read-only in this version. All active centres offer its services.
+- Inspection is optional; a MongoDB outage does not prevent core SQL bookings/completion. SQL reports expose an explicit unavailable flag for missing inspection analytics.
+- Centre deactivation preserves outstanding jobs and prohibits new reservations/slot publication. Staff deactivation revokes effective access immediately.
+- Reports use selected local date boundaries. Defaults show six months of charges; operational booking summaries include upcoming arrivals.
+- New vehicles do not automatically receive fabricated maintenance history. Their owner adds rules and known baselines.
+- Expired sessions are denied even before cleanup. No scheduled notifications, payment collection, password reset, or external vehicle integration is included.
+
+## Data dictionary, diagrams, and course evidence
+
+The complete data dictionary and ER/workflow diagrams are in the SRS. SQL scripts contain concrete database implementation and demonstrations. Tests provide direct evidence for locking, rollback, actor/centre restrictions, uniqueness, document validation, and calculations. Screenshots are generated by the browser workflow tests.
