@@ -333,7 +333,7 @@ const val = (f: FormData, k: string) => String(f.get(k) || "").trim();
 const nullableNumber = (f: FormData, k: string) =>
   val(f, k) ? Number(val(f, k)) : null;
 function CarArt({
-  color = "#689d8c",
+  color = "#b184b5",
   large = false,
 }: {
   color?: string;
@@ -358,26 +358,26 @@ function CarArt({
         d="M50 99 66 75l55-14 32-32h77l49 45 28 11 9 34H43V106z"
         fill={color}
       />
-      <path d="m136 61 23-24h31v28zm61-24h28l30 29-58-2z" fill="#17372f" />
+      <path d="m136 61 23-24h31v28zm61-24h28l30 29-58-2z" fill="#3b263e" />
       <path
         d="M57 94h56m168-7 24 9M184 72v41m-54-38v37"
-        stroke="#17372f"
+        stroke="#3b263e"
         opacity=".5"
         strokeWidth="3"
       />
-      <path d="M63 89h21v11H57m231-2h17v9h-17" fill="#e8eee5" />
+      <path d="M63 89h21v11H57m231-2h17v9h-17" fill="#fff1ce" />
       <path
         d="M203 77h12m-69-1h12"
-        stroke="#17372f"
+        stroke="#3b263e"
         strokeWidth="3"
         strokeLinecap="round"
       />
-      <circle cx="107" cy="117" r="23" fill="#17312c" />
-      <circle cx="107" cy="117" r="12" fill="#c2cfc8" />
-      <circle cx="107" cy="117" r="5" fill="#17312c" />
-      <circle cx="263" cy="117" r="23" fill="#17312c" />
-      <circle cx="263" cy="117" r="12" fill="#c2cfc8" />
-      <circle cx="263" cy="117" r="5" fill="#17312c" />
+      <circle cx="107" cy="117" r="23" fill="#302337" />
+      <circle cx="107" cy="117" r="12" fill="#e6dbe6" />
+      <circle cx="107" cy="117" r="5" fill="#302337" />
+      <circle cx="263" cy="117" r="23" fill="#302337" />
+      <circle cx="263" cy="117" r="12" fill="#e6dbe6" />
+      <circle cx="263" cy="117" r="5" fill="#302337" />
       <path
         d="M37 120h26m44-54 8-5m155 8h9l8 8"
         stroke={color}
@@ -428,7 +428,7 @@ function Login({
             Your vehicles, trusted workshops, and a smarter maintenance plan.
             All moving together.
           </p>
-          <CarArt color="#99cbb7" large />
+          <CarArt color="#f1bd86" large />
           <div className="auth-benefits">
             <span>
               <ShieldCheck size={19} /> Your history, connected
@@ -629,6 +629,7 @@ export default function Workspace() {
           setUser(u);
           setBootError("");
           setPage("overview");
+          setMenu(false);
         }}
       />
     );
@@ -678,6 +679,7 @@ export default function Workspace() {
                 await api("auth/logout", "POST", {});
                 setUser(null);
                 setPage("overview");
+                setMenu(false);
               } catch (e) {
                 setToast((e as Error).message);
               }
@@ -1052,7 +1054,7 @@ function Overview(p: Props) {
             <div className="hero-car">
               <span className="orbit orbit-one" />
               <span className="orbit orbit-two" />
-              <CarArt color="#aad2ba" large />
+              <CarArt color="#f1bd86" large />
               <span className="hero-car-label">
                 <span className="live-dot" /> Care that keeps you moving
               </span>
@@ -1411,7 +1413,7 @@ function Garage(p: Props) {
                 </div>
               </div>
               <div className={`vehicle-illustration color-${i % 3}`}>
-                <CarArt color={["#709c88", "#6b87a1", "#b89a73"][i % 3]} />
+                <CarArt color={["#b184b5", "#d49b89", "#bb9463"][i % 3]} />
               </div>
               <div className="vehicle-body">
                 <div className="vehicle-title">
@@ -3724,12 +3726,12 @@ function Reports(p: Props) {
                             <i
                               style={{
                                 background: [
-                                  "#24735a",
-                                  "#799d8b",
-                                  "#b5c8b7",
-                                  "#d3b982",
-                                  "#8f9fb3",
-                                  "#baabc9",
+                                  "#8b478b",
+                                  "#d47e93",
+                                  "#c5a3d4",
+                                  "#d6aa60",
+                                  "#cf9267",
+                                  "#a99cbd",
                                 ][i % 6],
                               }}
                             />
