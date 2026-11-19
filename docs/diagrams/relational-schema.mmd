@@ -1,0 +1,118 @@
+erDiagram
+    service_centres {
+        uuid id PK
+        text name
+        text address
+        text city
+        text phone
+        boolean active
+        timestamptz created_at
+    }
+    users {
+        uuid id PK
+        text name
+        text email UK
+        text password_hash
+        text role
+        uuid centre_id FK
+        boolean active
+        timestamptz created_at
+    }
+    sessions {
+        uuid id PK
+        uuid user_id FK
+        text token_hash UK
+        timestamptz expires_at
+        timestamptz created_at
+    }
+    vehicles {
+        uuid id PK
+        uuid owner_id FK
+        text registration UK
+        text make
+        text model
+        integer model_year
+        integer current_km
+        timestamptz mileage_updated_at
+        timestamptz created_at
+    }
+    service_types {
+        uuid id PK
+        text code UK
+        text name
+        text description
+    }
+    fault_codes {
+        text code PK
+        text label
+        text component
+    }
+    service_slots {
+        uuid id PK
+        uuid centre_id FK
+        timestamptz starts_at
+        timestamptz ends_at
+        integer capacity
+        timestamptz created_at
+    }
+    bookings {
+        uuid id PK
+        uuid vehicle_id FK
+        uuid slot_id FK
+        uuid requested_service_type_id FK
+        text complaint
+        text status
+        uuid request_key UK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    service_records {
+        uuid id PK
+        uuid booking_id FK, UK
+        uuid completed_by FK
+        timestamptz completed_at
+        integer odometer_km
+        text summary
+    }
+    service_items {
+        uuid id PK
+        uuid record_id FK
+        uuid service_type_id FK
+        text description
+        integer quantity
+        decimal unit_price
+        text fault_code FK
+    }
+    maintenance_rules {
+        uuid id PK
+        uuid vehicle_id FK
+        uuid service_type_id FK
+        integer interval_months
+        integer interval_km
+        date baseline_date
+        integer baseline_km
+    }
+    booking_status_history {
+        uuid id PK
+        uuid booking_id FK
+        text from_status
+        text to_status
+        uuid actor_id FK
+        timestamptz changed_at
+    }
+    service_centres |o--o{ users : "centre_id"
+    users ||--o{ sessions : "user_id"
+    users ||--o{ vehicles : "owner_id"
+    service_centres ||--o{ service_slots : "centre_id"
+    vehicles ||--o{ bookings : "vehicle_id"
+    service_slots ||--o{ bookings : "slot_id"
+    service_types ||--o{ bookings : "requested_service_type_id"
+    bookings ||--o| service_records : "booking_id"
+    users ||--o{ service_records : "completed_by"
+    service_records ||--o{ service_items : "record_id"
+    service_types ||--o{ service_items : "service_type_id"
+    fault_codes |o--o{ service_items : "fault_code"
+    vehicles ||--o{ maintenance_rules : "vehicle_id"
+    service_types ||--o{ maintenance_rules : "service_type_id"
+    bookings ||--o{ booking_status_history : "booking_id"
+    users ||--o{ booking_status_history : "actor_id"

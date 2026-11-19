@@ -1,0 +1,38 @@
+digraph G {
+graph [rankdir=LR, bgcolor="#ffffff", pad="0.4", nodesep="0.5", ranksep="1.1", splines=polyline, fontname="DejaVu Sans", label="SMART VEHICLE SERVICE AND MAINTENANCE INTELLIGENCE SYSTEM\nEntity Relationship Diagram\nSolid lines: SQL foreign keys | Dashed lines: application references to MongoDB", labelloc=t, fontsize=22];
+node [shape=plain, fontname="DejaVu Sans"];
+edge [fontname="DejaVu Sans", fontsize=10, color="#89798d", arrowsize=0.65];
+service_centres [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>service_centres</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+users [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>users</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+sessions [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>sessions</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+vehicles [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>vehicles</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+service_types [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>service_types</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+fault_codes [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>fault_codes</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="code" ALIGN="LEFT">code</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+service_slots [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>service_slots</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+bookings [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>bookings</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+service_records [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>service_records</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+service_items [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>service_items</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+maintenance_rules [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>maintenance_rules</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+booking_status_history [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#e0d4e3" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#713d79"><FONT COLOR="white"><B>booking_status_history</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="id" ALIGN="LEFT">id</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+job_inspections [label=<<TABLE BORDER="0" CELLBORDER="1" COLOR="#ecd4c6" CELLSPACING="0" CELLPADDING="7"><TR><TD COLSPAN="3" BGCOLOR="#a45c41"><FONT COLOR="white"><B>job_inspections (MongoDB)</B></FONT></TD></TR><TR><TD ALIGN="LEFT">PK</TD><TD PORT="_id" ALIGN="LEFT">_id</TD><TD ALIGN="LEFT"></TD></TR><TR><TD ALIGN="LEFT">UK, REF</TD><TD PORT="booking_id" ALIGN="LEFT">booking_id</TD><TD ALIGN="LEFT"></TD></TR><TR><TD ALIGN="LEFT">REF</TD><TD PORT="vehicle_id" ALIGN="LEFT">vehicle_id</TD><TD ALIGN="LEFT"></TD></TR><TR><TD ALIGN="LEFT">REF</TD><TD PORT="centre_id" ALIGN="LEFT">centre_id</TD><TD ALIGN="LEFT"></TD></TR><TR><TD ALIGN="LEFT">REF</TD><TD PORT="updated_by" ALIGN="LEFT">updated_by</TD><TD ALIGN="LEFT"></TD></TR></TABLE>>];
+service_centres -> users [label="employs (STAFF only) (0..1 : 0..N)"];
+users -> sessions [label="has sessions (1 : 0..N)"];
+users -> vehicles [label="owns (1 : 0..N)"];
+service_centres -> service_slots [label="publishes slots (1 : 0..N)"];
+vehicles -> bookings [label="has (1 : 0..N)"];
+service_slots -> bookings [label="receives (1 : 0..N)"];
+service_types -> bookings [label="requested for (1 : 0..N)"];
+bookings -> service_records [label="has (1 : 0..1)"];
+users -> service_records [label="completes (1 : 0..N)"];
+service_records -> service_items [label="contains (1 : 0..N)"];
+service_types -> service_items [label="classifies (1 : 0..N)"];
+fault_codes -> service_items [label="tags (0..1 : 0..N)"];
+vehicles -> maintenance_rules [label="has (1 : 0..N)"];
+service_types -> maintenance_rules [label="classifies (1 : 0..N)"];
+bookings -> booking_status_history [label="has (1 : 0..N)"];
+users -> booking_status_history [label="records changes (1 : 0..N)"];
+bookings -> job_inspections [style=dashed, color="#bb795a", label="booking_id (1 : 0..1)"];
+vehicles -> job_inspections [style=dashed, color="#bb795a", label="vehicle_id (1 : 0..N)"];
+service_centres -> job_inspections [style=dashed, color="#bb795a", label="centre_id (1 : 0..N)"];
+users -> job_inspections [style=dashed, color="#bb795a", label="updated_by (1 : 0..N)"];
+}
